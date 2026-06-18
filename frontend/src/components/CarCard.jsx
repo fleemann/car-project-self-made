@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 const LABELS = {
   automatic: 'Automatik',
   manual: 'Manuell',
@@ -13,8 +15,26 @@ const formatPrice = (price) =>
   }).format(price)
 
 export default function CarCard({ car, onEdit, onDelete, onRent }) {
+  const [imageFailed, setImageFailed] = useState(false)
+  const showImage = car.image && !imageFailed
+
   return (
     <article className="car-card">
+      {showImage ? (
+        <img
+          className="car-image"
+          src={car.image}
+          alt={`${car.brand} ${car.model}`}
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <div className="car-image car-image--placeholder" aria-hidden="true">
+          <span>🚗</span>
+          <small>{car.brand}</small>
+        </div>
+      )}
+
       <div className="car-title">
         <h3>
           {car.brand} {car.model}

@@ -7,6 +7,7 @@ const formatPrice = (price) =>
   }).format(price)
 
 export default function RentModal({ car, startDate: initialStartDate, endDate: initialEndDate, onConfirm, onClose }) {
+  const today = new Date().toISOString().slice(0, 10)
   const [startDate, setStartDate] = useState(initialStartDate || '')
   const [endDate, setEndDate] = useState(initialEndDate || '')
   const [error, setError] = useState('')
@@ -16,6 +17,11 @@ export default function RentModal({ car, startDate: initialStartDate, endDate: i
 
     if (!startDate || !endDate) {
       setError('Bitte Start- und Enddatum auswählen.')
+      return
+    }
+
+    if (startDate < today) {
+      setError('Startdatum darf nicht in der Vergangenheit liegen.')
       return
     }
 
@@ -50,6 +56,7 @@ export default function RentModal({ car, startDate: initialStartDate, endDate: i
             <input
               type="date"
               required
+              min={today}
               value={startDate}
               onChange={(event) => setStartDate(event.target.value)}
             />
@@ -60,7 +67,7 @@ export default function RentModal({ car, startDate: initialStartDate, endDate: i
             <input
               type="date"
               required
-              min={startDate}
+              min={startDate || today}
               value={endDate}
               onChange={(event) => setEndDate(event.target.value)}
             />

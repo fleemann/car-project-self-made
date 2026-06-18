@@ -1,5 +1,10 @@
 package com.example.carrental.model;
 
+/**
+ * Buendelt alle Query-Parameter der Auto-Suche in einem Objekt.
+ * Die Zahl-Felder sind absichtlich Wrapper-Typen ({@code Double}/{@code Integer}):
+ * {@code null} bedeutet "Filter nicht gesetzt" und wirkt dann nicht.
+ */
 public class SearchParams {
 
     private String brand;

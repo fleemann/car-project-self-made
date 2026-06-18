@@ -222,6 +222,36 @@ select:focus {
   padding: 18px;
 }
 
+.car-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e8edf5;
+  display: block;
+}
+
+.car-image--placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #dbe4f0, #c3d0e4);
+  color: var(--muted);
+}
+
+.car-image--placeholder span {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.car-image--placeholder small {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .car-title {
   display: flex;
   justify-content: space-between;

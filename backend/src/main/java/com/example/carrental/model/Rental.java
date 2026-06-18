@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 
+/**
+ * Datenmodell fuer eine Mietbuchung.
+ * Kennt ihr Auto ueber die {@code carId} und haelt Start- und Enddatum als Text.
+ */
 public class Rental {
 
     private Integer carId;
@@ -23,6 +27,15 @@ public class Rental {
         this.endDate = endDate;
     }
 
+    /**
+     * Prueft, ob diese Buchung sich mit einem anderen Zeitraum ueberschneidet.
+     * Umgekehrt gedacht: keine Ueberschneidung, wenn ein Zeitraum ganz vor dem
+     * anderen liegt.
+     *
+     * @param start Beginn des zu pruefenden Zeitraums
+     * @param end   Ende des zu pruefenden Zeitraums
+     * @return {@code true}, wenn sich die Zeitraeume ueberschneiden
+     */
     public boolean overlaps(LocalDate start, LocalDate end) {
         LocalDate existingStart = LocalDate.parse(this.startDate);
         LocalDate existingEnd = LocalDate.parse(this.endDate);

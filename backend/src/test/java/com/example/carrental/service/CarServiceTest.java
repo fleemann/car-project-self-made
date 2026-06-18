@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,12 +126,12 @@ class CarServiceTest {
 
     @Test
     void search_excludesUnavailableCars() {
-        vw.getRentals().add(new Rental(1, "2026-06-01", "2026-06-10"));
+        vw.getRentals().add(new Rental(1, day(10), day(20)));
         when(repository.findAll()).thenReturn(List.of(vw, bmw));
 
         SearchParams params = new SearchParams();
-        params.setStartDate("2026-06-05");
-        params.setEndDate("2026-06-08");
+        params.setStartDate(day(12));
+        params.setEndDate(day(15));
 
         List<Car> result = service.search(params);
 
@@ -172,10 +173,10 @@ class CarServiceTest {
 
     @Test
     void rent_throwsWhenDatesConflict() {
-        vw.getRentals().add(new Rental(1, "2026-06-01", "2026-06-05"));
+        vw.getRentals().add(new Rental(1, day(10), day(15)));
         when(repository.findById(1)).thenReturn(Optional.of(vw));
 
-        Rental requestedRental = new Rental(null, "2026-06-03", "2026-06-07");
+        Rental requestedRental = new Rental(null, day(12), day(18));
 
         assertThatThrownBy(() -> service.rent(1, requestedRental))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -184,7 +185,7 @@ class CarServiceTest {
 
     @Test
     void rent_throwsWhenEndBeforeStart() {
-        Rental requestedRental = new Rental(null, "2026-06-10", "2026-06-01");
+        Rental requestedRental = new Rental(null, day(10), day(5));
 
         assertThatThrownBy(() -> service.rent(1, requestedRental))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -192,19 +193,33 @@ class CarServiceTest {
     }
 
     @Test
+    void rent_throwsWhenStartInPast() {
+        Rental requestedRental = new Rental(null, day(-3), day(5));
+
+        assertThatThrownBy(() -> service.rent(1, requestedRental))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Vergangenheit");
+    }
+
+    @Test
     void rent_succeedsWhenAvailable() {
         when(repository.findById(1)).thenReturn(Optional.of(vw));
 
-        Rental requestedRental = new Rental(null, "2026-07-01", "2026-07-07");
-        Rental savedRental = new Rental(1, "2026-07-01", "2026-07-07");
+        Rental requestedRental = new Rental(null, day(30), day(37));
+        Rental savedRental = new Rental(1, day(30), day(37));
 
         when(repository.addRental(1, requestedRental)).thenReturn(Optional.of(savedRental));
 
         Rental result = service.rent(1, requestedRental);
 
         assertThat(result.getCarId()).isEqualTo(1);
-        assertThat(result.getStartDate()).isEqualTo("2026-07-01");
-        assertThat(result.getEndDate()).isEqualTo("2026-07-07");
+        assertThat(result.getStartDate()).isEqualTo(day(30));
+        assertThat(result.getEndDate()).isEqualTo(day(37));
+    }
+
+    /** Datum relativ zu heute als YYYY-MM-DD (negativ = Vergangenheit). */
+    private String day(int plusDays) {
+        return LocalDate.now().plusDays(plusDays).toString();
     }
 
     private Car makeCar(

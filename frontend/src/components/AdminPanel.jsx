@@ -8,7 +8,8 @@ const emptyCar = {
   ps: '',
   engine: 'gasoline',
   year: '',
-  seats: ''
+  seats: '',
+  image: ''
 }
 
 export default function AdminPanel({ editingCar, onSave, onReset }) {
@@ -24,7 +25,8 @@ export default function AdminPanel({ editingCar, onSave, onReset }) {
         ps: editingCar.ps,
         engine: editingCar.engine,
         year: editingCar.year,
-        seats: editingCar.seats
+        seats: editingCar.seats,
+        image: editingCar.image ?? ''
       })
     } else {
       setForm(emptyCar)
@@ -49,7 +51,8 @@ export default function AdminPanel({ editingCar, onSave, onReset }) {
       ps: Number(form.ps),
       engine: form.engine,
       year: Number(form.year),
-      seats: Number(form.seats)
+      seats: Number(form.seats),
+      image: form.image.trim()
     }, editingCar?.id)
 
     setForm(emptyCar)
@@ -125,6 +128,13 @@ export default function AdminPanel({ editingCar, onSave, onReset }) {
           required
           value={form.seats}
           onChange={set('seats')}
+        />
+
+        <input
+          type="url"
+          placeholder="Bild-URL (optional)"
+          value={form.image}
+          onChange={set('image')}
         />
 
         <button type="submit">

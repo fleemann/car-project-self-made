@@ -1,4 +1,6 @@
 export default function SearchFilters({ filters, onChange, onSearch }) {
+  const today = new Date().toISOString().slice(0, 10)
+
   const set = (key) => (event) => {
     onChange((previousFilters) => ({
       ...previousFilters,
@@ -12,6 +14,7 @@ export default function SearchFilters({ filters, onChange, onSearch }) {
         <label>Startdatum</label>
         <input
           type="date"
+          min={today}
           value={filters.startDate}
           onChange={set('startDate')}
         />
@@ -21,6 +24,7 @@ export default function SearchFilters({ filters, onChange, onSearch }) {
         <label>Enddatum</label>
         <input
           type="date"
+          min={filters.startDate || today}
           value={filters.endDate}
           onChange={set('endDate')}
         />

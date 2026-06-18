@@ -8,6 +8,11 @@ import jakarta.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Datenmodell fuer ein Auto in der Vermietung.
+ * Die Validierungsregeln stehen als Bean-Validation-Annotationen direkt am Feld,
+ * sodass ungueltige Eingaben schon beim Binden abgewiesen werden.
+ */
 public class Car {
 
     private Integer id;
@@ -37,6 +42,9 @@ public class Car {
 
     @Positive(message = "Sitzanzahl muss positiv sein")
     private int seats;
+
+    /** Optionale Bild-URL fuer die Anzeige (kein Pflichtfeld). */
+    private String image;
 
     private List<Rental> rentals = new ArrayList<>();
 
@@ -115,11 +123,38 @@ public class Car {
         this.seats = seats;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public List<Rental> getRentals() {
         return rentals;
     }
 
     public void setRentals(List<Rental> rentals) {
         this.rentals = rentals;
+    }
+
+    /**
+     * Ueberschreibt die fachlichen Felder mit den Werten aus dem Eingabe-Objekt.
+     * {@code id} und {@code rentals} bleiben bewusst unangetastet, damit eine
+     * Aenderung weder die Identitaet noch bestehende Buchungen ueberschreibt.
+     *
+     * @param input das Auto mit den neuen Werten
+     */
+    public void updateFrom(Car input) {
+        this.brand = input.brand;
+        this.model = input.model;
+        this.price = input.price;
+        this.gear = input.gear;
+        this.ps = input.ps;
+        this.engine = input.engine;
+        this.year = input.year;
+        this.seats = input.seats;
+        this.image = input.image;
     }
 }
